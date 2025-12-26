@@ -1,0 +1,444 @@
+\documentclass[a4paper]{article}
+
+% ==============================
+%          Packages
+% ==============================
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english, russian]{babel}
+\usepackage{cmap}
+
+\usepackage{amsmath, amssymb, amsfonts, amsthm}
+\usepackage{systeme}
+
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{varwidth}
+\usepackage{environ}
+
+\usepackage[
+  left=0.6cm,right=0.6cm,
+  top=0.6cm,bottom=1.2cm,
+  bindingoffset=0cm
+]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{tocloft}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+
+\usepackage{tikz}
+\usepackage{pgffor}
+\usepackage{pgfplots}
+\usepackage[all]{xy}
+
+\usepackage{xcolor}
+\usepackage[many]{tcolorbox}
+
+\usepackage{chngcntr}
+\usepackage{pifont}
+\usepackage[normalem]{ulem}
+
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{bookmark}
+
+
+% ==============================
+%        Darkmode colors
+% ==============================
+\newcommand{\createcolormode}{%
+  \ifdefined\darkmode
+    % Dark mode page
+    \pagecolor[rgb]{0.05,0.05,0.075}%
+    \color[rgb]{0.8,0.8,0.7}%
+
+    \definecolor{theoremtext}{rgb}{0.8,0.8,0.7}
+    \definecolor{taskborder}{rgb}{0.7,0.7,0.6}
+    \definecolor{taskbg}{rgb}{0.09,0.09,0.13}
+
+    \definecolor{bodyborder}{rgb}{0.5,0.5,0.4}
+    \definecolor{bodybg}{rgb}{0.05,0.05,0.075}
+
+    \definecolor{noteborder_green}{rgb}{0.55,0.80,0.60}
+    \definecolor{notebg_green}{rgb}{0.08,0.12,0.09}
+
+    \definecolor{noteborder_blue}{rgb}{0.55,0.70,0.90}
+    \definecolor{notebg_blue}{rgb}{0.08,0.10,0.13}
+
+    \definecolor{noteborder_red}{rgb}{0.90,0.60,0.60}
+    \definecolor{notebg_red}{rgb}{0.13,0.08,0.10}
+
+    \definecolor{noteborder_teal}{rgb}{0.60,0.85,0.85}
+    \definecolor{notebg_teal}{rgb}{0.07,0.11,0.11}
+
+    \definecolor{noteborder_amber}{rgb}{0.95,0.75,0.45}
+    \definecolor{notebg_amber}{rgb}{0.13,0.11,0.06}
+
+    \definecolor{noteborder_purple}{rgb}{0.80,0.70,0.95}
+    \definecolor{notebg_purple}{rgb}{0.11,0.09,0.13}
+
+    % Dark mode hyperlinks
+    \hypersetup{colorlinks=true, linkcolor=white, citecolor=white, urlcolor=white}%
+  \else
+    % Light mode page
+    \definecolor{theoremtext}{rgb}{0,0,0}
+    \definecolor{taskborder}{rgb}{0,0,0}
+    \definecolor{taskbg}{rgb}{0.95,0.95,0.95}
+
+    \definecolor{bodyborder}{rgb}{0.5,0.5,0.5}
+    \definecolor{bodybg}{rgb}{1,1,1}
+
+    \definecolor{noteborder_green}{rgb}{0.35,0.60,0.40}
+    \definecolor{notebg_green}{rgb}{0.94,0.98,0.94}
+
+    \definecolor{noteborder_blue}{rgb}{0.40,0.55,0.80}
+    \definecolor{notebg_blue}{rgb}{0.94,0.97,1.00}
+
+    \definecolor{noteborder_red}{rgb}{0.75,0.38,0.38}
+    \definecolor{notebg_red}{rgb}{1.00,0.95,0.95}
+
+    \definecolor{noteborder_teal}{rgb}{0.25,0.60,0.60}
+    \definecolor{notebg_teal}{rgb}{0.93,0.98,0.98}
+
+    \definecolor{noteborder_amber}{rgb}{0.80,0.55,0.25}
+    \definecolor{notebg_amber}{rgb}{1.00,0.98,0.92}
+
+    \definecolor{noteborder_purple}{rgb}{0.58,0.45,0.75}
+    \definecolor{notebg_purple}{rgb}{0.97,0.95,0.99}
+
+    % Light mode hyperlinks
+    \hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}%
+  \fi
+}
+
+% =================
+%       General
+% =================
+\pgfplotsset{compat=1.18}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\colorbox{taskbg}{{\thepage/\pageref{LastPage}}}}
+\setlength{\footskip}{14.2pt}
+
+% ==============================
+%        Misc small macros
+% ==============================
+\newcommand{\letbe}{\mathclose{]}}
+\newcommand{\circled}[1]{\tikz[baseline=(char.base)]{
+  \node[shape=circle,draw,inner sep=1pt] (char) {#1};
+}}
+
+% ==============================
+%       tcolorbox settings
+% ==============================
+\tcbset{points/.store in=\tcbpoints, points={}}
+\tcbset{subproblems/.store in=\tcbsubproblems, subproblems={}}
+\tcbset{defines/.store in=\tcbdefines, defines={}}
+
+\tcbset{
+  task/.style={
+    enhanced,
+    colback=taskbg,
+    colbacktitle=taskbg,
+    coltitle=theoremtext,
+    coltext=theoremtext,
+    boxrule=0pt,
+    frame hidden,
+    borderline west={0.5mm}{0.0mm}{taskborder},
+    fonttitle=\bfseries\rmfamily\Large,
+    breakable,
+    arc=0mm,
+    before skip=3ex,
+    after skip=3ex,
+    after title={\normalsize\quad\ifx\tcbpoints\empty\else(\tcbpoints)\fi}
+  }
+}
+
+\tcbset{
+  body/.style={
+    theorem name,
+    enhanced,
+    colback=bodybg,
+    colbacktitle=bodybg,
+    coltitle=theoremtext,
+    coltext=theoremtext,
+    boxrule=0pt,
+    frame hidden,
+    borderline west={0.5mm}{0.0mm}{bodyborder},
+    fonttitle=\bfseries\rmfamily\large,
+    breakable,
+    before skip=3ex,
+    after skip=3ex,
+    after title={\normalsize\quad\ifx\tcbsubproblems\empty\else(\tcbsubproblems)\fi}
+  }
+}
+
+\tcbset{
+  def/.style={task, after title={\normalsize\quad\tcbdefines}},
+  claim/.style={task, after title={\normalsize\quad\ifx\tcbdefines\empty\else[\tcbdefines]\fi}},
+  proof/.style={task, after title={\normalsize\quad\tcbdefines}}
+}
+
+\tcbset{
+  note/.style={
+    enhanced, breakable,
+    frame hidden, boxrule=0pt, arc=0mm,
+    coltext=theoremtext,
+    before skip=3ex, after skip=3ex
+  },
+  note_green/.style = { note, colback=notebg_green, borderline west={0.6mm}{0mm}{noteborder_green} },
+  note_blue/.style  = { note, colback=notebg_blue,  borderline west={0.6mm}{0mm}{noteborder_blue}  },
+  note_red/.style   = { note, colback=notebg_red,   borderline west={0.6mm}{0mm}{noteborder_red}   },
+  note_teal/.style  = { note, colback=notebg_teal,  borderline west={0.6mm}{0mm}{noteborder_teal}  },
+  note_amber/.style = { note, colback=notebg_amber, borderline west={0.6mm}{0mm}{noteborder_amber} },
+  note_purple/.style= { note, colback=notebg_purple,borderline west={0.6mm}{0mm}{noteborder_purple}},
+  blue/.style  = note_blue,
+  red/.style   = note_red,
+  green/.style = note_green,
+  teal/.style  = note_teal,
+  amber/.style = note_amber,
+  purple/.style= note_purple
+}
+
+% ==============================
+%         Theorem blocks
+% ==============================
+\newtcbtheorem[]{_problem}{Задача}{task}{problem}
+\newtcbtheorem[use counter from=_problem]{_ex}{Упражнение}{task}{_problem}
+
+\newtcbtheorem{_solution}{Решение}{body}{}
+\newtcbtheorem{_ans}{Ответ}{body}{}
+
+\newtcbtheorem[auto counter, number within=section]{_definition}{Определение}{def}{}
+\newtcbtheorem[auto counter, number within=section]{_question}{Вопрос}{def}{}
+\newtcbtheorem[auto counter, number within=section]{_formulation}{Формулировка}{def}{}
+\newtcbtheorem[auto counter, number within=section]{_algorithm}{Алгоритм}{def}{}
+\newtcbtheorem[auto counter, number within=section]{_claim}{Факт}{claim}{}
+\newtcbtheorem[auto counter, number within=section]{_proof}{Доказательство}{proof}{proof}\newtcbtheorem{_note}{}{note}{note}
+
+% ==============================
+%        User environments
+% ==============================
+\newenvironment{problem}[1][]{
+  \tcbset{points=#1}
+  \begin{_problem}{}{}
+}{\end{_problem}}
+
+\newenvironment{ex}[1][]{
+  \tcbset{points=#1}
+  \begin{_ex}{}{}
+}{\end{_ex}}
+
+\newenvironment{solution}[1][]{
+  \tcbset{subproblems=#1}
+  \begin{_solution}{}{}
+}{\end{_solution}}
+
+\newenvironment{ans}[1][]{
+  \tcbset{subproblems=#1}
+  \begin{_ans}{}{}
+}{\end{_ans}}
+
+\newenvironment{definition}[1][]{
+  \tcbset{defines={#1}}
+  \if\relax\detokenize{#1}\relax\else
+    \addcontentsline{toc}{subsection}{#1}
+  \fi
+  \begin{_definition}{}{}
+}{\end{_definition}}
+
+\newenvironment{question}[1][]{
+  \tcbset{defines={#1}}
+  \if\relax\detokenize{#1}\relax\else
+    \addcontentsline{toc}{subsection}{#1}
+  \fi
+  \begin{_question}{}{}
+}{\end{_question}}
+
+\newenvironment{formulation}[1][]{
+  \tcbset{defines={#1}}
+  \if\relax\detokenize{#1}\relax\else
+    \addcontentsline{toc}{subsection}{#1}
+  \fi
+  \begin{_formulation}{}{}
+}{\end{_formulation}}
+
+\newenvironment{algorithm}[1][]{
+  \tcbset{defines={#1}}
+  \if\relax\detokenize{#1}\relax\else
+    \addcontentsline{toc}{subsection}{#1}
+  \fi
+  \begin{_algorithm}{}{}
+}{\end{_algorithm}}
+
+\newenvironment{claim}[1][]{
+  \tcbset{defines={#1}}
+  \if\relax\detokenize{#1}\relax\else
+    \addcontentsline{toc}{subsection}{#1}
+  \fi
+  \begin{_claim}{}{}
+}{\end{_claim}}
+
+\newenvironment{note}[1][]%
+{\begin{_note*}[notitle,note_green,#1]{\unskip}{}}%
+{\end{_note*}}
+
+\makeatletter
+\let\amsthm@proof\proof
+\let\endamsthm@proof\endproof
+\newenvironment{stdproof}[1][\proofname]{%
+  \amsthm@proof[#1]%
+}{%
+  \endamsthm@proof%
+}
+\makeatother
+
+\makeatletter
+\renewenvironment{proof}[1][]{
+  \tcbset{defines={#1}}
+  \if\relax\detokenize{#1}\relax\else
+    \addcontentsline{toc}{subsection}{#1}
+  \fi
+  \begin{_proof}{}{}
+}{%
+  \end{_proof}
+}
+\makeatother
+
+% ==============================
+%          Custom title
+% ==============================
+\newcommand{\createtitle}{
+  \noindent
+  \colorbox{taskbg}{
+    \parbox{\dimexpr\textwidth-0.45cm}{
+      \Large \textbf{\ifdefined\title \title \else \space \fi}
+      \normalsize
+      \hfill \textbf{\ifdefined\date \date \else \space \fi}
+
+      \ifdefined\author \author \else \space \fi
+      \hfill
+      Исходный tex: \href{https://github.com/Coldish-elf/CDS-hub}{GitHub репозиторий}
+    }
+  }
+}
+
+% ==============================
+%        Small helpers
+% ==============================
+\addto\captionsrussian{\renewcommand{\contentsname}{Список лекций}}
+
+\newcommand{\hiddensection}[1]{%
+  \refstepcounter{section}%
+  \section*{#1}%
+  \addcontentsline{toc}{section}{#1}%
+  \label{sec_#1}%
+}
+
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
+
+% ==============================
+%  Math operators and commands
+% ==============================
+\newcounter{gitem}
+\newcommand{\gitem}{\par\addtocounter{gitem}{1}\noindent\textbf{\arabic{gitem})}\; }
+\newcommand{\gitemreset}{\setcounter{gitem}{0}}
+\newcommand{\MatrixDim}[2]{\operatorname{M}_{#1\,#2}(\mathbb R)}
+\newcommand{\Matrix}[1]{\operatorname{M}_{#1}(\mathbb R)}
+\newcommand{\MatrixFDim}[3]{\operatorname{M}_{#2\,#3}(#1)}
+\newcommand{\MatrixF}[2]{\operatorname{M}_{#2}(#1)}
+\newcommand{\Vector}[1]{\mathbb R^{#1}}
+\newcommand{\chr}{\operatorname{char}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\Sym}[1]{\operatorname{S}_{#1}}
+\newcommand{\Identity}{\operatorname{Id}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\dec}{\operatorname{dec}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\height}{\operatorname{ht}}
+\newcommand{\ev}{\operatorname{ev}}
+\newcommand{\Bil}{\operatorname{Bil}}
+\newcommand{\SBil}{\operatorname{SBil}}
+\newcommand{\ABil}{\operatorname{ABil}}
+\newcommand{\pr}{\operatorname{pr}}
+\newcommand{\ort}{\operatorname{ort}}
+\newcommand{\Vol}{\operatorname{Vol}}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\am}{a.m}
+\DeclareMathOperator{\gm}{g.m}
+\DeclareMathOperator{\spec}{spec}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\rj}{rj}
+\DeclareMathOperator{\adj}{adj}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\D}{\mathbb{D}}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\F}{\mathbb{F}}
+\DeclareMathOperator{\N}{\mathbb{N}}
+\DeclareMathOperator{\R}{\mathbb{R}}
+\DeclareMathOperator{\Q}{\mathbb{Q}}
+\DeclareMathOperator{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\Pp}{\mathbb{P}}
+\DeclareMathOperator{\Lex}{Lex}
+\DeclareMathOperator{\Exp}{Exp}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\cov}{cov}
+\DeclareMathOperator{\Var}{Var}
+
+\newcommand{\akseq}{\{a_k\}^{\infty}_{k = 1}}
+\newcommand*{\defeq}{\stackrel{\text{def}}{=}}
+
+% ==============================
+%    Custom table of contents
+% ==============================
+\makeatletter
+\newcommand{\mytableofcontents}{
+  \begin{tcolorbox}[
+    enhanced,
+    breakable,
+    colback=notebg_purple,
+    borderline west={0.6mm}{0mm}{noteborder_purple},
+    frame hidden,
+    arc=0mm,
+    boxrule=0pt,
+    before skip=2ex,
+    after skip=2ex,
+    title={\Large\textbf{Содержание конспекта:}},
+    coltitle=theoremtext,
+    fonttitle=\bfseries,
+    attach title to upper,
+    after title={\par\vspace{0.5em}}
+  ]
+    \begingroup
+
+    \setlength{\cftsecindent}{0pt}
+    \setlength{\cftsubsecindent}{1.5em}
+    \setlength{\cftbeforesecskip}{0.3em}
+
+    \ifdefined\darkmode
+      \renewcommand{\cftsecfont}{\color{theoremtext}}
+      \renewcommand{\cftsubsecfont}{\color{theoremtext}}
+      \renewcommand{\cftsecpagefont}{\color{theoremtext}}
+      \renewcommand{\cftsubsecpagefont}{\color{theoremtext}}
+      \renewcommand{\cftsecleader}{\color{taskborder}\cftdotfill{\cftsecdotsep}}
+      \renewcommand{\cftsubsecleader}{\color{taskborder}\cftdotfill{\cftsubsecdotsep}}
+    \fi
+
+    \@starttoc{toc}
+
+    \endgroup
+  \end{tcolorbox}
+}
+\makeatother
