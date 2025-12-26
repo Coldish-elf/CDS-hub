@@ -62,8 +62,6 @@ for f in parts_files:
         f.write(f"% !TeX root = ../{colloquium_name}.tex")
 
 with open(os.path.join(colloquium_path, main_file), "w", encoding="utf-8") as f:
-    f.write(f"!TeX root = {colloquium_name}.tex")
-
-open(os.path.join(colloquium_path, main_file), "w", encoding="utf-8").close()
+    f.write(f"% !TeX root = {colloquium_name}.tex")
 
 print("\nStructure successfully created!")
