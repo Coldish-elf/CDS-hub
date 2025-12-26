@@ -121,7 +121,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyfoot[C]{\colorbox{taskbg}{{\thepage/\pageref{LastPage}}}}
-\setlength{\footskip}{12pt}
+\setlength{\footskip}{14.2pt}
 
 % ==============================
 %        Misc small macros
@@ -178,7 +178,8 @@
 
 \tcbset{
   def/.style={task, after title={\normalsize\quad\tcbdefines}},
-  claim/.style={task, after title={\normalsize\quad\ifx\tcbdefines\empty\else[\tcbdefines]\fi}}
+  claim/.style={task, after title={\normalsize\quad\ifx\tcbdefines\empty\else[\tcbdefines]\fi}},
+  proof/.style={task, after title={\normalsize\quad\tcbdefines}}
 }
 
 \tcbset{
@@ -216,7 +217,7 @@
 \newtcbtheorem[auto counter, number within=section]{_formulation}{Формулировка}{def}{}
 \newtcbtheorem[auto counter, number within=section]{_algorithm}{Алгоритм}{def}{}
 \newtcbtheorem[auto counter, number within=section]{_claim}{Факт}{claim}{}
-\newtcbtheorem{_note}{}{note}{note}
+\newtcbtheorem[auto counter, number within=section]{_proof}{Доказательство}{proof}{proof}\newtcbtheorem{_note}{}{note}{note}
 
 % ==============================
 %        User environments
@@ -296,12 +297,17 @@
 \makeatother
 
 \makeatletter
-\renewenvironment{proof}[1][\proofname]{%
-  \begin{tcolorbox}[body, title={#1}]%
+\renewenvironment{proof}[1][]{
+  \tcbset{defines={#1}}
+  \if\relax\detokenize{#1}\relax\else
+    \addcontentsline{toc}{subsection}{#1}
+  \fi
+  \begin{_proof}{}{}
 }{%
-  \end{tcolorbox}%
+  \end{_proof}
 }
 \makeatother
+
 % ==============================
 %          Custom title
 % ==============================
