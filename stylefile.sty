@@ -409,12 +409,15 @@
 \makeatletter
 \newcommand{\hiddensection}[1]{
   \refstepcounter{section}
+  \setcounter{subsection}{0}
   \section*{#1}
   \phantomsection
-  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}
+  \addcontentsline{toc}{section}{
+    \protect\numberline{\thesection}#1
+  }
 }
-\makeatother
 
+\makeatother
 \makeatletter
 \renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{
   \hskip -\arraycolsep
@@ -520,7 +523,7 @@
       \renewcommand{\numberline}[1]{
         \hb@xt@\@tempdima{##1.\hspace{0.6em}}
       }
-
+      \renewcommand{\\}{\hspace{-0.3em}}
       \@starttoc{toc}
     \endgroup
   \end{tcolorbox}
