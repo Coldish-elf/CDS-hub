@@ -3,10 +3,10 @@
 % ==============================
 %          Packages
 % ==============================
+\usepackage{cmap}
 \usepackage[utf8]{inputenc}
 \usepackage[T2A]{fontenc}
 \usepackage[english, russian]{babel}
-\usepackage{cmap}
 
 \usepackage{amsmath, amssymb, amsfonts, amsthm}
 \usepackage{systeme}
@@ -44,16 +44,15 @@
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{bookmark}
-
+\usepackage{ragged2e}
 
 % ==============================
 %        Darkmode colors
 % ==============================
-\newcommand{\createcolormode}{%
+\newcommand{\createcolormode}{
   \ifdefined\darkmode
-    % Dark mode page
-    \pagecolor[rgb]{0.05,0.05,0.075}%
-    \color[rgb]{0.8,0.8,0.7}%
+    \pagecolor[rgb]{0.05,0.05,0.075}
+    \color[rgb]{0.8,0.8,0.7}
 
     \definecolor{theoremtext}{rgb}{0.8,0.8,0.7}
     \definecolor{taskborder}{rgb}{0.7,0.7,0.6}
@@ -81,9 +80,8 @@
     \definecolor{notebg_purple}{rgb}{0.11,0.09,0.13}
 
     % Dark mode hyperlinks
-    \hypersetup{colorlinks=true, linkcolor=white, citecolor=white, urlcolor=white}%
+    \hypersetup{colorlinks=true, linkcolor=white, citecolor=white, urlcolor=white}
   \else
-    % Light mode page
     \definecolor{theoremtext}{rgb}{0,0,0}
     \definecolor{taskborder}{rgb}{0,0,0}
     \definecolor{taskbg}{rgb}{0.95,0.95,0.95}
@@ -110,7 +108,7 @@
     \definecolor{notebg_purple}{rgb}{0.97,0.95,0.99}
 
     % Light mode hyperlinks
-    \hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}%
+    \hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
   \fi
 }
 
@@ -120,8 +118,10 @@
 \pgfplotsset{compat=1.18}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyfoot[C]{\colorbox{taskbg}{{\thepage/\pageref{LastPage}}}}
 \setlength{\footskip}{14.2pt}
+\AtBeginDocument{
+  \fancyfoot[C]{\colorbox{taskbg}{{\thepage/\pageref{LastPage}}}}
+}
 
 % ==============================
 %        Misc small macros
@@ -172,14 +172,43 @@
     breakable,
     before skip=3ex,
     after skip=3ex,
-    after title={\normalsize\quad\ifx\tcbsubproblems\empty\else(\tcbsubproblems)\fi}
+    after title={
+      \normalsize\quad
+      \ifx\tcbsubproblems\empty\else
+        \parbox[t]{0.75\linewidth}{\raggedright(\tcbsubproblems)}
+      \fi
+    }
   }
 }
 
 \tcbset{
-  def/.style={task, after title={\normalsize\quad\tcbdefines}},
-  claim/.style={task, after title={\normalsize\quad\ifx\tcbdefines\empty\else[\tcbdefines]\fi}},
-  proof/.style={task, after title={\normalsize\quad\tcbdefines}}
+  def/.style={
+    task,
+    after title={
+      \normalsize\quad
+      \ifx\tcbdefines\empty\else
+        \parbox[t]{0.75\linewidth}{\raggedright\tcbdefines}
+      \fi
+    }
+  },
+  claim/.style={
+    task,
+    after title={
+      \normalsize\quad
+      \ifx\tcbdefines\empty\else
+        \parbox[t]{0.75\linewidth}{\raggedright[\tcbdefines]}
+      \fi
+    }
+  },
+  proof/.style={
+    task,
+    after title={
+      \normalsize\quad
+      \ifx\tcbdefines\empty\else
+        \parbox[t]{0.75\linewidth}{\raggedright\tcbdefines}
+      \fi
+    }
+  }
 }
 
 \tcbset{
@@ -212,12 +241,48 @@
 \newtcbtheorem{_solution}{Решение}{body}{}
 \newtcbtheorem{_ans}{Ответ}{body}{}
 
-\newtcbtheorem[auto counter, number within=section]{_definition}{Определение}{def}{}
-\newtcbtheorem[auto counter, number within=section]{_question}{Вопрос}{def}{}
-\newtcbtheorem[auto counter, number within=section]{_formulation}{Формулировка}{def}{}
-\newtcbtheorem[auto counter, number within=section]{_algorithm}{Алгоритм}{def}{}
-\newtcbtheorem[auto counter, number within=section]{_claim}{Факт}{claim}{}
-\newtcbtheorem[auto counter, number within=section]{_proof}{Доказательство}{proof}{proof}\newtcbtheorem{_note}{}{note}{note}
+\newtcbtheorem[auto counter]{_definition}{Определение}{def}{}
+\newtcbtheorem[auto counter]{_question}{Вопрос}{def}{}
+\newtcbtheorem[auto counter]{_formulation}{Формулировка}{def}{}
+\newtcbtheorem[auto counter]{_algorithm}{Алгоритм}{def}{}
+\newtcbtheorem[auto counter]{_claim}{Факт}{claim}{}
+\newtcbtheorem[auto counter]{_proof}{Доказательство}{proof}{proof}
+
+\newtcbtheorem{_note}{}{note}{note}
+
+% ==============================
+%   PDF/bookmark safe strings
+% ==============================
+\pdfstringdefDisableCommands{
+  \def\\{ }
+  \def\newline{ }
+  \def\par{ }
+  \def\texttt#1{#1}
+  \def\textbf#1{#1}
+  \def\textit#1{#1}
+  \def\emph#1{#1}
+  \def\underline#1{#1}
+  \def\mbox#1{#1}
+  \def\hfill{}
+  \def\quad{ }
+  \def\qquad{ }
+}
+
+% ==============================
+%   ToC helpers
+% ==============================
+\makeatletter
+\renewcommand{\thesubsection}{\arabic{subsection}}
+
+\newcommand{\cds@tocsubsection}[1]{
+  \refstepcounter{subsection}
+  \phantomsection
+  \addcontentsline{toc}{subsection}{\protect\numberline{\thesubsection}#1}
+}
+
+\newcommand{\cdsTocSubsection}[1]{\cds@tocsubsection{#1}}
+
+\makeatother
 
 % ==============================
 %        User environments
@@ -242,68 +307,78 @@
   \begin{_ans}{}{}
 }{\end{_ans}}
 
+\makeatletter
 \newenvironment{definition}[1][]{
   \tcbset{defines={#1}}
-  \if\relax\detokenize{#1}\relax\else
-    \addcontentsline{toc}{subsection}{#1}
-  \fi
   \begin{_definition}{}{}
+  \if\relax\detokenize{#1}\relax\else
+    \cds@tocsubsection{#1}
+  \fi
 }{\end{_definition}}
+\makeatother
 
+\makeatletter
 \newenvironment{question}[1][]{
   \tcbset{defines={#1}}
-  \if\relax\detokenize{#1}\relax\else
-    \addcontentsline{toc}{subsection}{#1}
-  \fi
   \begin{_question}{}{}
+  \if\relax\detokenize{#1}\relax\else
+    \cds@tocsubsection{#1}
+  \fi
 }{\end{_question}}
+\makeatother
 
+\makeatletter
 \newenvironment{formulation}[1][]{
   \tcbset{defines={#1}}
-  \if\relax\detokenize{#1}\relax\else
-    \addcontentsline{toc}{subsection}{#1}
-  \fi
   \begin{_formulation}{}{}
+  \if\relax\detokenize{#1}\relax\else
+    \cds@tocsubsection{#1}
+  \fi
 }{\end{_formulation}}
+\makeatother
 
+\makeatletter
 \newenvironment{algorithm}[1][]{
   \tcbset{defines={#1}}
-  \if\relax\detokenize{#1}\relax\else
-    \addcontentsline{toc}{subsection}{#1}
-  \fi
   \begin{_algorithm}{}{}
+  \if\relax\detokenize{#1}\relax\else
+    \cds@tocsubsection{#1}
+  \fi
 }{\end{_algorithm}}
+\makeatother
 
+\makeatletter
 \newenvironment{claim}[1][]{
   \tcbset{defines={#1}}
-  \if\relax\detokenize{#1}\relax\else
-    \addcontentsline{toc}{subsection}{#1}
-  \fi
   \begin{_claim}{}{}
+  \if\relax\detokenize{#1}\relax\else
+    \cds@tocsubsection{#1}
+  \fi
 }{\end{_claim}}
+\makeatother
 
-\newenvironment{note}[1][]%
-{\begin{_note*}[notitle,note_green,#1]{\unskip}{}}%
+\newenvironment{note}[1][]
+{\begin{_note*}[notitle,note_green,#1]{\unskip}{}}
 {\end{_note*}}
 
 \makeatletter
 \let\amsthm@proof\proof
 \let\endamsthm@proof\endproof
-\newenvironment{stdproof}[1][\proofname]{%
-  \amsthm@proof[#1]%
-}{%
-  \endamsthm@proof%
+\newenvironment{stdproof}[1][\proofname]{
+  \amsthm@proof[#1]
+}{
+  \endamsthm@proof
 }
 \makeatother
 
 \makeatletter
 \renewenvironment{proof}[1][]{
   \tcbset{defines={#1}}
-  \if\relax\detokenize{#1}\relax\else
-    \addcontentsline{toc}{subsection}{#1}
-  \fi
   \begin{_proof}{}{}
-}{%
+  \if\relax\detokenize{#1}\relax\else
+    \cds@tocsubsection{#1}
+  \fi
+}{
   \end{_proof}
 }
 \makeatother
@@ -314,7 +389,7 @@
 \newcommand{\createtitle}{
   \noindent
   \colorbox{taskbg}{
-    \parbox{\dimexpr\textwidth-0.45cm}{
+    \parbox{\dimexpr\textwidth-0.45cm\relax}{
       \Large \textbf{\ifdefined\title \title \else \space \fi}
       \normalsize
       \hfill \textbf{\ifdefined\date \date \else \space \fi}
@@ -331,15 +406,20 @@
 % ==============================
 \addto\captionsrussian{\renewcommand{\contentsname}{Список лекций}}
 
-\newcommand{\hiddensection}[1]{%
-  \refstepcounter{section}%
-  \section*{#1}%
-  \addcontentsline{toc}{section}{#1}%
-  \label{sec_#1}%
+\makeatletter
+\newcommand{\hiddensection}[1]{
+  \refstepcounter{section}
+  \setcounter{subsection}{0}
+  \section*{#1}
+  \phantomsection
+  \addcontentsline{toc}{section}{
+    \protect\numberline{\thesection}#1
+  }
 }
 
+\makeatother
 \makeatletter
-\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{
   \hskip -\arraycolsep
   \let\@ifnextchar\new@ifnextchar
   \array{#1}}
@@ -359,7 +439,7 @@
 \newcommand{\chr}{\operatorname{char}}
 \newcommand{\diag}{\operatorname{diag}}
 \newcommand{\Sym}[1]{\operatorname{S}_{#1}}
-\newcommand{\Identity}{\operatorname{Id}}
+\newcommand{\Id}{\operatorname{Id}}
 \newcommand{\sgn}{\operatorname{sgn}}
 \newcommand{\dec}{\operatorname{dec}}
 \newcommand{\Hom}{\operatorname{Hom}}
@@ -422,22 +502,29 @@
     after title={\par\vspace{0.5em}}
   ]
     \begingroup
+      \raggedright
+      \setlength{\parfillskip}{0pt plus 1fil}
 
-    \setlength{\cftsecindent}{0pt}
-    \setlength{\cftsubsecindent}{1.5em}
-    \setlength{\cftbeforesecskip}{0.3em}
+      \setlength{\cftsecindent}{0pt}
+      \setlength{\cftsubsecindent}{1em}
+      \setlength{\cftbeforesecskip}{0.3em}
 
-    \ifdefined\darkmode
+      \setlength{\cftsecnumwidth}{1em}
+      \setlength{\cftsubsecnumwidth}{1em}
+
       \renewcommand{\cftsecfont}{\color{theoremtext}}
       \renewcommand{\cftsubsecfont}{\color{theoremtext}}
       \renewcommand{\cftsecpagefont}{\color{theoremtext}}
       \renewcommand{\cftsubsecpagefont}{\color{theoremtext}}
-      \renewcommand{\cftsecleader}{\color{taskborder}\cftdotfill{\cftsecdotsep}}
-      \renewcommand{\cftsubsecleader}{\color{taskborder}\cftdotfill{\cftsubsecdotsep}}
-    \fi
 
-    \@starttoc{toc}
+      \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+      \renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
 
+      \renewcommand{\numberline}[1]{
+        \hb@xt@\@tempdima{##1.\hspace{0.6em}}
+      }
+      \renewcommand{\\}{\hspace{-0.3em}}
+      \@starttoc{toc}
     \endgroup
   \end{tcolorbox}
 }
