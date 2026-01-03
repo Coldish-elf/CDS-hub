@@ -270,7 +270,7 @@ SECTION_START
                             </div>
                             <div class="card-actions justify-end mt-4">
                                 <a href="$pdf_path" target="_blank" class="btn btn-primary btn-sm">
-                                    👁️ Открыть
+                                    📖 Открыть
                                 </a>
                                 <a href="$pdf_path" download class="btn btn-outline btn-sm">
                                     ⬇️ Скачать
