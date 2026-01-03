@@ -1,0 +1,208 @@
+name: Check PR Compilation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.tex'
+      - '**.sty'
+      - '**.cls'
+      - '**.bib'
+
+concurrency:
+  group: pr-check-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  check-compilation:
+    name: Check LaTeX Compilation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache TeX Live
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/texlive
+            ~/.texlive
+          key: texlive-${{ runner.os }}-${{ hashFiles('.github/workflows/check-pr.yml') }}
+          restore-keys: |
+            texlive-${{ runner.os }}-
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-fonts-extra \
+            texlive-lang-cyrillic \
+            latexmk
+
+      - name: Make build script executable
+        run: chmod +x scripts/build.sh || true
+
+      - name: Check LaTeX compilation
+        id: compile
+        run: |
+          set +e
+          
+          BUILD_LOG="build-logs.txt"
+          FAILED_FILES=""
+          SUCCESS_COUNT=0
+          FAIL_COUNT=0
+          
+          echo "=== LaTeX Compilation Check ===" | tee "$BUILD_LOG"
+          echo "Started at: $(date)" | tee -a "$BUILD_LOG"
+          echo "" | tee -a "$BUILD_LOG"
+          
+          # Find all main .tex files (excluding parts/ directories)
+          TEX_FILES=$(find . -name "*.tex" -type f ! -path "*/parts/*" ! -path "./.git/*" ! -path "./build/*")
+          
+          if [ -z "$TEX_FILES" ]; then
+            echo "No .tex files found to compile" | tee -a "$BUILD_LOG"
+            echo "status=success" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          for tex_file in $TEX_FILES; do
+            echo "----------------------------------------" | tee -a "$BUILD_LOG"
+            echo "Compiling: $tex_file" | tee -a "$BUILD_LOG"
+            echo "Time: $(date '+%Y-%m-%d %H:%M:%S')" | tee -a "$BUILD_LOG"
+            
+            # Get directory and filename
+            DIR=$(dirname "$tex_file")
+            FILE=$(basename "$tex_file")
+            
+            # Change to file directory for relative paths
+            cd "$DIR"
+            
+            # Run latexmk twice for convergence
+            for run in 1 2; do
+              echo "  Run $run/2..." | tee -a "$GITHUB_WORKSPACE/$BUILD_LOG"
+              latexmk -pdf -f -interaction=nonstopmode -synctex=1 "$FILE" >> "$GITHUB_WORKSPACE/$BUILD_LOG" 2>&1
+            done
+            
+            # Check if PDF was created
+            PDF_FILE="${FILE%.tex}.pdf"
+            if [ -f "$PDF_FILE" ]; then
+              echo "✅ SUCCESS: $tex_file" | tee -a "$GITHUB_WORKSPACE/$BUILD_LOG"
+              SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+            else
+              echo "❌ FAILED: $tex_file" | tee -a "$GITHUB_WORKSPACE/$BUILD_LOG"
+              FAIL_COUNT=$((FAIL_COUNT + 1))
+              FAILED_FILES="$FAILED_FILES\n- $tex_file"
+              
+              # Extract error from log
+              LOG_FILE="${FILE%.tex}.log"
+              if [ -f "$LOG_FILE" ]; then
+                echo "  Error details (first 30 lines):" | tee -a "$GITHUB_WORKSPACE/$BUILD_LOG"
+                grep -A 5 "^!" "$LOG_FILE" | head -30 | tee -a "$GITHUB_WORKSPACE/$BUILD_LOG"
+              fi
+            fi
+            
+            # Clean temporary files
+            rm -f *.aux *.log *.toc *.out *.fls *.fdb_latexmk *.synctex.gz *.bbl *.blg *.dvi *.ps *.pdf
+            
+            cd "$GITHUB_WORKSPACE"
+          done
+          
+          echo "" | tee -a "$BUILD_LOG"
+          echo "=== Summary ===" | tee -a "$BUILD_LOG"
+          echo "Success: $SUCCESS_COUNT" | tee -a "$BUILD_LOG"
+          echo "Failed: $FAIL_COUNT" | tee -a "$BUILD_LOG"
+          echo "Finished at: $(date)" | tee -a "$BUILD_LOG"
+          
+          # Save outputs for other steps
+          echo "success_count=$SUCCESS_COUNT" >> $GITHUB_OUTPUT
+          echo "fail_count=$FAIL_COUNT" >> $GITHUB_OUTPUT
+          
+          if [ $FAIL_COUNT -gt 0 ]; then
+            echo "failed_files<<EOF" >> $GITHUB_OUTPUT
+            echo -e "$FAILED_FILES" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "status=failure" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload build logs on failure
+        if: steps.compile.outputs.status == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: build-logs.txt
+          retention-days: 30
+
+      - name: Create job summary
+        run: |
+          echo "## LaTeX Compilation Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.compile.outputs.status }}" == "success" ]; then
+            echo "### ✅ All files compiled successfully!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "- **Successful compilations:** ${{ steps.compile.outputs.success_count }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ❌ Compilation failed!" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "- **Successful:** ${{ steps.compile.outputs.success_count }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Failed:** ${{ steps.compile.outputs.fail_count }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Failed files:**" >> $GITHUB_STEP_SUMMARY
+            echo "${{ steps.compile.outputs.failed_files }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "📥 Download `build-logs` artifact for detailed error logs." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Comment on PR (failure)
+        if: steps.compile.outputs.status == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const failedFiles = `${{ steps.compile.outputs.failed_files }}`;
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            
+            const body = `## ❌ LaTeX Compilation Failed
+            
+            The following files failed to compile:
+            ${failedFiles}
+            
+            **📥 [View detailed logs in Actions](${runUrl})**
+            
+            Please fix the errors and push again.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Comment on PR (success)
+        if: steps.compile.outputs.status == 'success' && steps.compile.outputs.success_count != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `## ✅ LaTeX Compilation Successful
+            
+            All **${{ steps.compile.outputs.success_count }}** LaTeX files compiled successfully!
+            
+            Ready to merge.`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Fail workflow if compilation failed
+        if: steps.compile.outputs.status == 'failure'
+        run: exit 1

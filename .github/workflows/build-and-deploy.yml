@@ -1,0 +1,115 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.tex'
+      - '**.sty'
+      - '**.cls'
+      - '**.bib'
+      - 'scripts/**'
+      - '.github/workflows/build-and-deploy.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build PDFs
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache TeX Live
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/texlive
+            ~/.texlive
+          key: texlive-${{ runner.os }}-${{ hashFiles('.github/workflows/build-and-deploy.yml') }}
+          restore-keys: |
+            texlive-${{ runner.os }}-
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-fonts-extra \
+            texlive-lang-cyrillic \
+            latexmk
+
+      - name: Make scripts executable
+        run: |
+          chmod +x scripts/build.sh
+          chmod +x scripts/generate-pages.sh
+
+      - name: Build all PDFs
+        run: ./scripts/build.sh
+
+      - name: Generate GitHub Pages
+        run: ./scripts/generate-pages.sh
+
+      - name: Upload build logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: build-logs.txt
+          retention-days: 30
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/pdfs
+
+      - name: Create build summary
+        run: |
+          echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Generated PDFs:" >> $GITHUB_STEP_SUMMARY
+          find build/pdfs -name "*.pdf" -type f | while read pdf; do
+            size=$(du -h "$pdf" | cut -f1)
+            name=$(basename "$pdf")
+            dir=$(dirname "$pdf" | sed 's|build/pdfs/||')
+            echo "- **$dir/$name** ($size)" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Ready for deployment!" >> $GITHUB_STEP_SUMMARY
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**View your PDFs at:** ${{ steps.deployment.outputs.page_url }}" >> $GITHUB_STEP_SUMMARY
