@@ -495,7 +495,7 @@
     boxrule=0pt,
     before skip=2ex,
     after skip=2ex,
-    title={\Large\textbf{Содержание конспекта:}},
+    title={\Large\textbf{Содержание:}},
     coltitle=theoremtext,
     fonttitle=\bfseries,
     attach title to upper,
@@ -505,12 +505,12 @@
       \raggedright
       \setlength{\parfillskip}{0pt plus 1fil}
 
-      \setlength{\cftsecindent}{0pt}
-      \setlength{\cftsubsecindent}{1em}
+      \setlength{\cftsecindent}{0em}
+      \setlength{\cftsubsecindent}{1.8em}
       \setlength{\cftbeforesecskip}{0.3em}
 
-      \setlength{\cftsecnumwidth}{1em}
-      \setlength{\cftsubsecnumwidth}{1em}
+      \setlength{\cftsecnumwidth}{0.7em}
+      \setlength{\cftsubsecnumwidth}{1.2em}
 
       \renewcommand{\cftsecfont}{\color{theoremtext}}
       \renewcommand{\cftsubsecfont}{\color{theoremtext}}
@@ -521,7 +521,7 @@
       \renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
 
       \renewcommand{\numberline}[1]{
-        \hb@xt@\@tempdima{##1.\hspace{0.6em}}
+        \hb@xt@\@tempdima{##1.\hfil}
       }
       \renewcommand{\\}{\hspace{-0.3em}}
       \@starttoc{toc}
