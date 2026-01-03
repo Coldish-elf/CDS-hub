@@ -1,0 +1,63 @@
+% !TeX root = ../template.tex
+\hiddensection{Определения}
+
+\phantomsection\label{sec_Definition01}
+\begin{definition}[Базовые обозначения]
+Пусть \(n \in \N\). Обозначим:
+\begin{itemize}[leftmargin=2em]
+  \item \(\Vector{n} = \R^n\),
+  \item \(\Matrix{n}\) и \(\MatrixDim{m}{n}\),
+  \item \(\MatrixF{\Q}{n}\) и \(\MatrixFDim{\F}{m}{n}\).
+\end{itemize}
+
+Также используем: \(\Id\), \(\diag\), \(\sgn\), \(\chr\), \(\Sym{n}\), \(\Vol(A)\).
+\begin{note}
+В качестве примера: \(\diag(1,2,3) \in \Matrix{3}\), а \(\chr(\F)=p\) или \(0\).
+\end{note}
+\end{definition}
+
+\phantomsection\label{sec_Definition02}
+\begin{definition}[Линейные отображения]
+Пусть \(V, W\) - векторные пространства над \(\R\). Тогда
+\[
+\Hom(V,W) = \{\, f:V\to W \mid f \text{ линейно}\,\}.
+\]
+Оценка размерности: \(\rk(f) \le \dim V\). Также полезно: \(\ev_x(f)\) (значение в точке) и \(\height(\mathfrak p)\) (высота простого идеала).
+\begin{note}[note_blue]
+Для матрицы \(A \in \MatrixDim{m}{n}\) используем \(\rk(A)\), \(\tr(A)\), \(\adj(A)\).
+\end{note}
+\end{definition}
+
+\phantomsection\label{sec_Definition03}
+\begin{definition}[Вот еще макросы]
+Пусть \(V\) - пространство над \(\R\). Обозначим множества билинейных форм:
+\[
+\Bil(V),\quad \SBil(V),\quad \ABil(V).
+\]
+Пример: \(b(x,y)=x^\top y\), где \(x,y\in \Vector{n}\).
+\begin{note}[note_teal]
+Если \(b\in\Bil(V)\), то \(\Re b\) и \(\Im b\) берутся по точкам (если \(V\) комплексное).
+\end{note}
+\end{definition}
+
+\phantomsection\label{sec_Definition04}
+\begin{definition}[И еще макросы \\ на тему случайные величины и операторы]
+Для случайной величины \(\xi\) используем \(\E \xi\), \(\Var(\xi)\), \(\Cov(\xi,\eta)\) и \(\cov(\xi,\eta)\).
+Также встречаются обозначения \(\D\) и \(\Pp\).
+\begin{note}[note_red]
+Пример: \(\Var(\xi) \defeq \E(\xi^2)-(\E\xi)^2\).
+\end{note}
+\end{definition}
+
+\phantomsection\label{sec_Definition05}
+\begin{definition}[И оставшиеся мелкие макросы]
+Последовательность: \(\akseq\). Интервальный «скобочный» макрос: \(a\letbe b\) (пример использования).
+Нумерованные пункты:
+\gitemreset
+\gitem Первый пункт (\circled{1}) и оператор \(\dec(x)\).
+\gitem Второй пункт: \(\ord(g)\), \(\lcm(m,n)\), \(\pr_i\), \(\ort(u)\).
+Также можно писать \(k\in\Z\) и \(q\in\Q\subseteq\R\).
+\begin{note}[note_amber]
+Ещё встречаются \(\Lex\) и \(\Exp\) как названия операторов/порядков, а также \(\am(A)\) и \(\gm(A)\) как обозначения средних/показателей (если они вводились).
+\end{note}
+\end{definition}

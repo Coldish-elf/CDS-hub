@@ -1,0 +1,36 @@
+% !TeX root = ../template.tex
+\hiddensection{Доказательства}
+
+\phantomsection\label{sec_Proofs01}
+\begin{proof}[Про единичный элемент]
+    В \(\Matrix{n}\) выполнено \(A\Id=\Id A=A\) для любого \(A\in\Matrix{n}\).
+    \begin{note}[amber]
+        Используем определение \(\Id\) и стандартные свойства умножения матриц.
+        \begin{note}
+            Умножение на \(\Id\) не меняет строки и столбцы матрицы.
+        \end{note}
+    \end{note}
+\end{proof}
+
+\phantomsection\label{sec_Proofs02}
+\begin{proof}[Оценка дисперсии]
+    Для \(\xi\) имеем \(\Var(\xi)\ge 0\).
+    \begin{note}[amber]
+        \(\Var(\xi)=\E\bigl((\xi-\E\xi)^2\bigr)\ge 0\).
+        \begin{note}
+            Здесь используется линейность \(\E\) и неотрицательность квадрата.
+        \end{note}
+    \end{note}
+\end{proof}
+
+
+\phantomsection\label{sec_Proofs03}
+\begin{proof}[Сопряжение следа]
+    Для \(A\in\MatrixF{\mathbb{C}}{n}\) верно \(\Re(\tr(A))=\tr(\Re A)\).
+    \begin{note}[amber]
+        Это свойство покомпонентного применения \(\Re\) и линейности \(\tr\).
+        \begin{note}
+            Взятие вещественной части коммутирует с суммированием диагональных элементов.
+        \end{note}
+    \end{note}
+\end{proof}

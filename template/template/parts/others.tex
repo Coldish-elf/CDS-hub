@@ -1,0 +1,46 @@
+% !TeX root = ../template.tex
+\hiddensection{Прочее}
+
+\phantomsection\label{sec_Other01}
+\begin{problem}[5]
+    Пусть \(A\in\MatrixDim{2}{2}\) и \(A=\diag(1,-1)\).
+    Найдите \( \tr(A)\) и \( \det(A)\).
+    \begin{note}[green]
+        Подсказка: \( \tr(\diag(\alpha,\beta))=\alpha+\beta\).
+    \end{note}
+\end{problem}
+
+\phantomsection\label{sec_Other02}
+\begin{solution}
+    Имеем \( \tr(A)=1+(-1)=0\), а \( \det(A)= -1\).
+    \begin{note}[purple]
+        Также \( \spec(A)=\{1,-1\}\).
+    \end{note}
+\end{solution}
+
+\phantomsection\label{sec_Other03}
+\begin{question}[Тест окружений \texttt{ex}/\texttt{ans} + счётчик \texttt{\textbackslash gitem}]
+    Ниже - демонстрация ручной нумерации пунктов:
+    \gitem \( \Pp(\Omega)=1\).
+    \gitem \( \E(\xi+\eta)=\E\xi+\E\eta\).
+    \gitemreset
+    \gitem После сброса счётчика снова первый пункт: \(\circled{1}\).
+\end{question}
+
+\begin{ex}
+    Рассмотрим \(V=\Vector{3}\). Пусть \(U\subseteq V\) - подпространство.
+    Запишите разложение \(V = U \oplus \ort(U)\).
+\end{ex}
+
+\begin{ans}
+    Формально: \(V = U \oplus \ort(U)\), а проекция обозначается \( \pr_U\).
+\end{ans}
+
+\phantomsection\label{sec_Other05}
+\begin{algorithm}[Мини-алгоритм с математикой]
+    Вход: \(n\in\N\).
+    Выход: значение \( \dec(n)\).
+    \begin{note}[blue]
+        Можно упомянуть лексикографический порядок \( \Lex(x,y)\) и случайную величину \(\xi\) с распределением \(\D(\xi)\).
+    \end{note}
+\end{algorithm}

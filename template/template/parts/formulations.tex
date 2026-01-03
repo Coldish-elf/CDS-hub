@@ -1,0 +1,44 @@
+% !TeX root = ../template.tex
+\hiddensection{Формулировки}
+
+\phantomsection\label{sec_Formulations01}
+\begin{formulation}[Формула полной вероятности]
+Пусть \(\{A_i\}_{i=1}^n\) - разбиение \(\Omega\), и \(\Pp(A_i)>0\). Тогда
+\(
+\Pp(B)=\sum_{i=1}^n \Pp(B\mid A_i)\,\Pp(A_i).
+\)
+\begin{note}[note_purple]
+Здесь \(\Pp\) - оператор вероятности, а \(\E\) - математическое ожидание.
+\end{note}
+\end{formulation}
+
+\phantomsection\label{sec_Formulations02}
+\begin{formulation}[Свойства следа]
+Для квадратной матрицы \(A\in\Matrix{n}\):
+\(
+\tr(AB)=\tr(BA),\ \tr(\Id)=n.
+\)
+
+Еще есть: \(\spec(A)\) - спектр, \(\adj(A)\) - присоединённая матрица.
+\end{formulation}
+
+\phantomsection\label{sec_Formulations03}
+\begin{formulation}[Лемма о ранге]
+Пусть \(A\in \MatrixDim{m}{n}\). Тогда \(\rk(A)\le \min(m,n)\).
+Также используем обозначения \(\rj(A)\) и \(\id_A\) (как «id»/тождество в другом контексте).
+\end{formulation}
+
+\phantomsection\label{sec_Formulations04}
+\begin{formulation}[Ковариация]
+Для случайных величин \(\xi,\eta\) справедливо:
+\[
+\Cov(\xi,\eta)=\E(\xi\eta)-\E\xi\,\E\eta,\qquad
+\cov(\xi,\eta)=\frac{\Cov(\xi,\eta)}{\sqrt{\Var(\xi)\Var(\eta)}}.
+\]
+\end{formulation}
+
+\phantomsection\label{sec_Formulations05}
+\begin{formulation}[Проекция и ортогональность]
+Пусть \(V=\R^n\), \(u\in V\setminus\{0\}\). Тогда \(\pr_u(v)\) - проекция, а \(\ort(u)\) - ортогональное дополнение.
+\end{formulation}
+
