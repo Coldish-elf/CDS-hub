@@ -1,0 +1,36 @@
+% !TeX root = ../colloquium-2.tex
+
+% Формулировки первого и второго правил Лопиталя.
+
+\phantomsection\label{sec_Definition14}
+\begin{definition}[Формулировки первого и второго правил Лопиталя.]
+    \subsection*{Формулировка первого правила Лопиталя, 
+                 неопределённость вида $\frac{0}{0}$.}
+    \begin{note}[purple]
+        Пусть:
+        \begin{enumerate}
+            \item Функции $f$ и $g$ определены и дифференцируемы на интервале $(a, \; b)$
+            \item $ \ds \lim_{x \rightarrow b-} f(x) = \lim_{x \rightarrow b-} g(x) = 0 $
+            \item $g'(\xi) \neq 0 \; \forall \xi \in (a, \; b)$
+            \item Существует конечный или бесконечный предел 
+            $\ds \lim_{x \rightarrow b-} \frac{f'(x)}{g'(x)}$
+        \end{enumerate}
+        Тогда справедливо равенство 
+        $\ds \lim_{x \rightarrow b-} \frac{f(x) }{g(x) } = 
+                       \lim_{x \rightarrow b-} \frac{f'(x)}{g'(x)} $
+    \end{note}
+
+    \subsection*{Формулировка второго правила Лопиталя,
+                 неопределённость вида $\frac{\infty}{\infty}$.}
+    \begin{note}[purple]
+        \begin{enumerate}
+            \item Функции $f$ и $g$ определены и дифференцируемы на интервале $(a, \; b)$
+            \item $\lim_{x \rightarrow b-} g(x) = \infty$
+            \item $g'(\xi) \neq 0 \; \forall \xi \in (a, \; b)$
+            \item Существует конечный или бесконечный предел 
+            $\ds \lim_{x \rightarrow b-} \frac{f'(x)}{g'(x)}$
+        \end{enumerate}
+        Тогда справедливо равенство $\ds \lim_{x \rightarrow b-} \frac{f(x)} {g(x)} = 
+                                         \lim_{x \rightarrow b-} \frac{f'(x)}{g'(x)}$
+    \end{note}
+\end{definition}

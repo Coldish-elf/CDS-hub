@@ -1,0 +1,123 @@
+% !TeX root = ../colloquium-2.tex
+
+\phantomsection\label{sec_Proofs05}
+\begin{proof}[Доказательство правил дифференцирования. Вывод производных функций $f(x) = \tg x, f(x) = \sh x$.]
+    \subsection*{Доказательство правил дифференцирования.}
+    \begin{note}[amber]
+        Пусть функции $f$ и $g$ дифференцируемы в точке $a$.
+        \begin{enumerate}[label=\arabic*)]
+        \item
+        функция $\alpha f + \beta g$ дифференцируема в точке $a$ при любых $\alpha, \beta \in \mathbb{R}$ и
+        \[
+        (\alpha f + \beta g)'(a)=\alpha f'(a)+\beta g'(a)
+        \]
+        (свойство линейности); \\
+            \item
+         $f\cdot g$ дифференцируема в точке $a$ и
+        \[
+        (f\cdot g)'(a)=f'(a)g(a)+f(a)g'(a)
+        \]
+        (правило Лейбница);
+            \item
+        если $g\ne 0$ в некоторой окрестности точки $a$, то $\frac{f}{g}$ дифференцируема в точке $a$ и
+        \[
+        \left(\frac{f}{g}\right)'(a)=\frac{f'(a)g(a)-g'(a)f(a)}{g^2(a)}.
+        \]
+        \end{enumerate}
+        \begin{note}[purple]
+            Доказательства.
+            \begin{enumerate}[label=\arabic*)]
+            \item 
+            Найдём производную функции $\alpha f+\beta g$ в точке $a$:
+            \[
+            \lim_{h\to 0}\frac{(\alpha f+\beta g)(a+h)-(\alpha f+\beta g)(a)}{h}
+            \]
+            \[
+            =\lim_{h\to 0}\left(
+            \alpha\frac{f(a+h)-f(a)}{h}
+            +
+            \beta\frac{g(a+h)-g(a)}{h}
+            \right)
+            =\alpha f'(a)+\beta g'(a).
+            \]
+            \item 
+            Снова вычислим производную по определению:
+            \[
+            \lim_{h\to 0}\frac{f(a+h)g(a+h)-f(a)g(a)}{h}
+            \]
+            \[
+            =\lim_{h\to 0}\frac{f(a+h)g(a+h)-f(a)g(a+h)+f(a)g(a+h)-f(a)g(a)}{h}
+            \]
+            \[
+            =\lim_{h\to 0}\left(
+            g(a+h)\frac{f(a+h)-f(a)}{h}
+            +
+            f(a)\frac{g(a+h)-g(a)}{h}
+            \right)
+            \]
+            \[
+            = g(a)f'(a)+g'(a)f(a).
+            \]
+            \item 
+            По арифметике пределов имеем:
+            \[
+            \lim_{h\to 0}\frac{\frac{f(a+h)}{g(a+h)}-\frac{f(a)}{g(a)}}{h}
+            \]
+            \[
+            =\lim_{h\to 0}
+            \frac{f(a+h)g(a)-f(a)g(a+h)}{h}\cdot\frac{1}{g(a+h)g(a)}
+            \]
+            \[
+            =\frac{1}{g^2(a)}\lim_{h\to 0}
+            \left(
+            g(a)\frac{f(a+h)-f(a)}{h}
+            -
+            f(a)\frac{g(a+h)-g(a)}{h}
+            \right)
+            \]
+            \[
+            =\frac{f'(a)g(a)-g'(a)f(a)}{g^2(a)}.
+            \]
+            \end{enumerate}
+        \end{note}
+    \end{note}
+
+    \subsection*{Вывод производных функций $f(x) = \tg x, f(x) = \sh x$.}
+    \begin{note}[amber]
+        \begin{note}[purple]
+            \begin{enumerate}[label=\arabic*)]
+            \item
+            \[
+            (\tg x)'=\frac{(\sin x)'\cos x-(\cos x)'\sin x}{\cos^2 x}
+            =\frac{\cos^2 x+\sin^2 x}{\cos^2 x}
+            =\frac{1}{\cos^2 x}
+            =1+\tg^2 x.
+            \]
+            Аналогично,
+            \[
+            (\ctg x)'=-\frac{1}{\sin^2 x}=-1-\ctg^2 x.
+            \]
+            \item 
+            Рассмотрим полезные функции: гиперболический синус 
+            \[
+            \sh x=\frac{e^x-e^{-x}}{2}
+            \]
+            и гиперболический косинус
+            \[
+            \ch x=\frac{e^x+e^{-x}}{2}.
+            \]
+            Согласно правилам дифференцирования
+            \[
+            (\sh x)'=\frac{1}{2}\big((e^x)'-(e^{-x})'\big)
+            =\frac{1}{2}\left(e^x-\left(-e^{-x}\right)\right)
+            =\frac{e^x+e^{-x}}{2}
+            =\ch x.
+            \]
+            Аналогично,
+            \[
+            (\ch x)'=\sh x.
+            \]
+            \end{enumerate}
+        \end{note}
+    \end{note}
+\end{proof}

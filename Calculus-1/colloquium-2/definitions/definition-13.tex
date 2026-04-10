@@ -1,0 +1,40 @@
+% !TeX root = ../colloquium-2.tex
+
+% Формулировки следствий теоремы Лагранжа.
+% Формулировка теоремы Коши.
+
+\phantomsection\label{sec_Definition13}
+\begin{definition}[Формулировки следствий теоремы Лагранжа.
+                   Формулировка теоремы Коши.]
+    \subsection*{Формулировки следствий теоремы Лагранжа.}
+    \begin{note}[amber]
+        \subsubsection*{Следствие 1.}
+        \begin{note}[purple]
+            Пусть определена и дифференцируема на интервале $(a, \; b)$
+            и $f'(x) = 0 \; \forall x \in (a, \; b)$. Тогда функция $f$ постоянна на $(a, \; b)$. 
+        \end{note}
+
+        \subsubsection*{Следствие 2.}
+        \begin{note}[purple]
+            Пусть функция $f$ определена и дифференцируема на интервале $(a, \; b)$
+            \begin{enumerate}
+                \item Функция $f$ не убывает на этом интервале тогда и только тогда, 
+                когда $$ f'(x) \geq 0 \; \forall x \in (a, \; b) $$
+                \item Функция $f$ не возрастает на этом интервале тогда и только тогда, 
+                когда $$ f'(x) \leq 0 \; \forall x \in (a, \; b) $$
+            \end{enumerate}
+        \end{note}
+    \end{note}
+
+    \subsection*{Формулировка теоремы Коши.}
+    \begin{note}[purple]
+        Пусть функции $f$ и $g$:
+        \begin{enumerate}
+            \item определены и непрерывны на отрезке $[a,\; b]$
+            \item дифференцируемы на интервале $(a, \; b)$
+            \item $g'(x) \neq 0 \; \forall x \in (a, \; b)$
+        \end{enumerate}
+        Тогда существует такая точка $c \in (a, \; b)$, что 
+        $$ \frac{f(b) - f(a)}{g(b) - g(a)} = \frac{f'(c)}{g'(c)} $$
+    \end{note}
+\end{definition}
